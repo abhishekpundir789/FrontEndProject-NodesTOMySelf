@@ -25,7 +25,19 @@
 <li> create API Gateways  </li>
 </ul>
 
+## ERD
+![ERD](https://github.com/BCIT-SSD-2020-21/front-end-nodestomyself/blob/master/Images/ERD.png?raw=true)
+
+## Login Page
 ![Login](https://github.com/BCIT-SSD-2020-21/front-end-nodestomyself/blob/master/Images/Login.png?raw=true)
+
+## ToDo Page
+![ToDo](https://github.com/BCIT-SSD-2020-21/front-end-nodestomyself/blob/master/Images/ToDos.png?raw=true)
+
+## User Profile page
+![UserProfile](https://github.com/BCIT-SSD-2020-21/front-end-nodestomyself/blob/master/Images/UserProfile.png?raw=true)
+
+
 
 
 
