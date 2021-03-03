@@ -26,7 +26,7 @@
 </ul>
 
 ## ERD
-![ERD](https://github.com/BCIT-SSD-2020-21/front-end-nodestomyself/blob/master/Images/ERD.png?raw=true)
+![ERD](https://github.com/BCIT-SSD-2020-21/front-end-nodestomyself/blob/master/Images/ERD.PNG?raw=true)
 
 ## Login Page
 ![Login](https://github.com/BCIT-SSD-2020-21/front-end-nodestomyself/blob/master/Images/Login.png?raw=true)
@@ -35,7 +35,7 @@
 ![ToDo](https://github.com/BCIT-SSD-2020-21/front-end-nodestomyself/blob/master/Images/ToDos.png?raw=true)
 
 ## User Profile page
-![UserProfile](https://github.com/BCIT-SSD-2020-21/front-end-nodestomyself/blob/master/Images/UserProfile.png?raw=true)
+![UserProfile](https://github.com/BCIT-SSD-2020-21/front-end-nodestomyself/blob/master/Images/UseProfile.png?raw=true)
 
 
 
