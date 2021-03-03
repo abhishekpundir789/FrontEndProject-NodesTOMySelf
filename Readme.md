@@ -24,3 +24,11 @@
 <li> create Lambda functions</li>
 <li> create API Gateways  </li>
 </ul>
+
+<h3>Prototypes for the Pages: </h3>
+<h4>User Login/SignUp Page</h4>
+<img src = "Screenshot(1).png" alt = "login page">
+<h4>To Do Page</h4>
+<img src = "Screenshot(2).png" alt = "to do page">
+<h4>User Profile Page</h4>
+<img src = "Screenshot(3).png" alt = "user profile page">
