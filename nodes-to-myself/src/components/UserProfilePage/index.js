@@ -35,14 +35,18 @@ export default function UserProfilePage(){
 
     //api call to get user
 
-    const submitNewPassword = () => {
+    const submitNewPassword = (event) => {
+        event.preventDefault()
         //add a check to make sure newPassword and confirmNewPassword match
         console.log(`new password is : ${newPassword}`)
+        setNewPassword("")
     }
 
-    const submitNewEmail = () => {
-        //add a check to make sure newPassword and confirmNewPassword match
+    const submitNewEmail = (event) => {
+        event.preventDefault()
         console.log(`new email is : ${newEmail}`)
+        setNewEmail("")
+
     }
 
     return(
