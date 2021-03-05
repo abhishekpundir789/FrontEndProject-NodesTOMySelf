@@ -1,7 +1,7 @@
-import React, {useState,useEffect} from 'react'
-import { Card,CardHeader,CardContent,Tabs,Tab,Typography,Button,TextField } from '@material-ui/core';
-import { Close } from '@material-ui/icons'
+import React, {useState} from 'react'
+import { Button,Card,CardHeader,CardContent,Tabs,Tab,TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles'
+import { blue } from '@material-ui/core/colors';
 
 const useStyles = makeStyles({
     root: {
@@ -9,7 +9,14 @@ const useStyles = makeStyles({
     },
     header: {
       maxHeight: 150,
-    }
+    },
+    inputField: {
+        paddingBottom: 15,
+    },
+    submitButton: {
+        backgroundColor: "#2256AE",
+        color: "#FFFFF0"
+    },
   })
 
 export default function Login(){
@@ -44,8 +51,7 @@ export default function Login(){
                         variant = "fullWidth"
                         value={tabValue}
                         onChange={handleTabChange}
-                        indicatorColor="primary"
-                        textColor="primary"
+                        indicatorColor= "primary"
                     >
                         <Tab label="Login" />
                         <Tab label="Sign Up" />
@@ -59,14 +65,16 @@ export default function Login(){
                             fullWidth
                             label="Username"
                             variant="filled"
+                            className={classes.inputField}
                         ></TextField>
-                        {tabValue == 1 && (
+                        {tabValue === 1 && (
                             <TextField
                             value = {email}
                             onChange = {e => setEmail(e.target.value)}
                             fullWidth
                             label="Email"
                             variant="filled"
+                            className={classes.inputField}
                             ></TextField>
                         )}
                         <TextField
@@ -76,8 +84,9 @@ export default function Login(){
                             fullWidth
                             label="Password"
                             variant="filled"
+                            className={classes.inputField}
                         ></TextField>
-                        <Button>{ tabValue === 0 ? "Log in" : "Sign up"}</Button>
+                        <Button className={classes.submitButton}>{ tabValue === 0 ? "Log in" : "Sign up"}</Button>
                     </form>
                 </CardContent>
             </Card>
