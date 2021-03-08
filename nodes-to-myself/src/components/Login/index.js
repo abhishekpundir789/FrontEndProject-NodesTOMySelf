@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
 import { Button,Card,CardHeader,CardContent,Tabs,Tab,TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles'
+import { Auth } from 'aws-amplify';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
     root: {
@@ -20,6 +22,7 @@ const useStyles = makeStyles({
 
 export default function Login({authenticate}){
     const classes = useStyles()
+    const history = useHistory();
 
     const [tabValue, setTabValue] = useState(0)
     const [username,setUsername] = useState("")
@@ -29,15 +32,34 @@ export default function Login({authenticate}){
     const submit = async (event) =>{
         event.preventDefault()
         if(tabValue === 0){
-            //login
             console.log({type: "login", username, password})
-            //clear textField after input success
+            try{
+                const loginResponse = await Auth.signIn({
+                username,
+                password,
+              });
+            authenticate(true);
+            history.push("/")
+            }catch(error){
+                console.log(error)
+            } 
         }else{
-            //sign up
             console.log({type: "sign up", username, email, password})
-            //clear textField after input success
+            try{
+                const signUpResponse = await Auth.signUp({
+                username,
+                password,
+                attributes: {
+                  email: email
+                }
+              });
+            authenticate(true);
+            history.push("/")
+            }catch(error){
+                console.log(error)
+            } 
         }
-        authenticate(true);
+        
     }
 
     const handleTabChange = (event, newValue) =>{

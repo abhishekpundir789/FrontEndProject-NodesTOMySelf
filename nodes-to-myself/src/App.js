@@ -1,5 +1,5 @@
 import {useState,useEffect} from 'react'
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import './App.css';
 import Login from './components/Login';
 import Header from './components/Header'
@@ -20,7 +20,7 @@ function App() {
 
   return (
     <Router>
-      <Header></Header>
+      <Header auth={isAuthenticated} authenticate={authenticateUser}></Header>
       <main style = {{marginTop: 30}}></main>
         <Switch>          
           <Route path="/login">
@@ -42,7 +42,7 @@ function App() {
             <Tabs></Tabs>
             <p>Notes</p>
           </Route>
-          <GuardedRoute path='/protected' auth={isAuthenticated} component={UserProfile} />
+          <GuardedRoute path='/profile' auth={isAuthenticated} component={UserProfile} />
           <Route path="/">
             <Tabs></Tabs>
             <p>Home</p>
