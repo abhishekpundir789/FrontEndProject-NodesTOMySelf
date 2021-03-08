@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     },
   })
 
-export default function Login(){
+export default function Login({authenticate}){
     const classes = useStyles()
 
     const [tabValue, setTabValue] = useState(0)
@@ -26,7 +26,7 @@ export default function Login(){
     const [email,setEmail] = useState("")
     const [password,setPassword] = useState("")
 
-    const submit = (event) =>{
+    const submit = async (event) =>{
         event.preventDefault()
         if(tabValue === 0){
             //login
@@ -37,6 +37,7 @@ export default function Login(){
             console.log({type: "sign up", username, email, password})
             //clear textField after input success
         }
+        authenticate(true);
     }
 
     const handleTabChange = (event, newValue) =>{
