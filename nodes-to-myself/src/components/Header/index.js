@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import logo from '../../assets/logoWhiteCrop.png'
+import { useHistory } from "react-router-dom"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +22,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ButtonAppBar() {
-  const classes = useStyles();
+  const classes = useStyles()
+  const history = useHistory()
 
   return (
     <div className={classes.root}>
@@ -30,7 +32,7 @@ export default function ButtonAppBar() {
           <Typography variant="h6" className={classes.title}>
             <img id="logo" src={logo}/>
           </Typography>          
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" onClick={()=>history.push("/login")}>Login</Button>
         </Toolbar>
       </AppBar>
     </div>
