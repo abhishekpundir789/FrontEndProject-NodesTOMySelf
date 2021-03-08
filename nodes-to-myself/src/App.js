@@ -6,6 +6,7 @@ import Header from './components/Header'
 import UserProfile from './components/UserProfilePage'
 import Tabs from './components/Tabs'
 import GuardedRoute from './components/GuardRoute'
+import Home from './components/Home'
 
 function App() {
   const [isAuthenticated, setisAuthenticated] = useState(false);
@@ -45,7 +46,7 @@ function App() {
           <GuardedRoute path='/profile' auth={isAuthenticated} component={UserProfile} />
           <Route path="/">
             <Tabs></Tabs>
-            <p>Home</p>
+            <Home></Home>
           </Route>
         </Switch>
     </Router>
