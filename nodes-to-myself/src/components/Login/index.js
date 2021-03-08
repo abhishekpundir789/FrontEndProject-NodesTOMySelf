@@ -31,9 +31,11 @@ export default function Login(){
         if(tabValue === 0){
             //login
             console.log({type: "login", username, password})
+            //clear textField after input success
         }else{
             //sign up
             console.log({type: "sign up", username, email, password})
+            //clear textField after input success
         }
     }
 
@@ -85,7 +87,7 @@ export default function Login(){
                             variant="filled"
                             className={classes.inputField}
                         ></TextField>
-                        <Button className={classes.submitButton}>{ tabValue === 0 ? "Log in" : "Sign up"}</Button>
+                        <Button type="submit" className={classes.submitButton}>{ tabValue === 0 ? "Log in" : "Sign up"}</Button>
                     </form>
                 </CardContent>
             </Card>
