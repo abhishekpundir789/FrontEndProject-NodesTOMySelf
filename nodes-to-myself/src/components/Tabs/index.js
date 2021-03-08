@@ -11,7 +11,7 @@ const useStyles = makeStyles({
   },
 });
 
-const pages = ["/", "/todos", "/notes", "/images", "/links", "/profile"]
+const pages = ["/todos", "/notes", "/images", "/links", "/profile"]
 
 export default function CenteredTabs() {
   const classes = useStyles();
