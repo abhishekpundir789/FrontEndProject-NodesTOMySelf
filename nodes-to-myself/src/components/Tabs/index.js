@@ -15,7 +15,7 @@ const pages = ["/", "/todos", "/notes", "/images", "/links", "/profile"]
 
 export default function CenteredTabs() {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState();
   const history = useHistory()
 
   useEffect(()=>{
@@ -36,8 +36,7 @@ export default function CenteredTabs() {
         indicatorColor="primary"
         textColor="primary"
         centered
-      >
-        <Tab label="Home" />
+      >        
         <Tab label="To Do" />
         <Tab label="Notes" />
         <Tab label="Images" />

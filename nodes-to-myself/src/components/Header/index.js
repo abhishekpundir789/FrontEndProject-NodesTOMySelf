@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
-}));
+}))
 
 export default function ButtonAppBar() {
   const classes = useStyles()
@@ -30,7 +30,9 @@ export default function ButtonAppBar() {
       <AppBar position="static">
         <Toolbar>         
           <Typography variant="h6" className={classes.title}>
-            <img id="logo" src={logo}/>
+              <a href="/">
+                <img id="logo" src={logo}/>
+              </a>
           </Typography>          
           <Button color="inherit" onClick={()=>history.push("/login")}>Login</Button>
         </Toolbar>
