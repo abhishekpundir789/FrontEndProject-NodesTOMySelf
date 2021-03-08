@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Header from './components/Header'
 import UserProfile from './components/UserProfilePage'
 import Tabs from './components/Tabs'
+import Home from './components/Home'
 
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
           </Route>
           <Route path="/">
             <Tabs></Tabs>
-            <p>Home</p>
+            <Home></Home>
           </Route>
         </Switch>
     </Router>
