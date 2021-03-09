@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import logo from '../../assets/logoWhiteCrop.png'
 import { useHistory } from "react-router-dom"
+import {Auth} from 'aws-amplify'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function ButtonAppBar() {
+export default function ButtonAppBar({auth, authenticate}) {
   const classes = useStyles()
   const history = useHistory()
 
@@ -34,7 +35,17 @@ export default function ButtonAppBar() {
                 <img id="logo" src={logo}/>
               </a>
           </Typography>          
-          <Button color="inherit" onClick={()=>history.push("/login")}>Login</Button>
+          <Button color="inherit" 
+          onClick={()=> {
+            if(!auth){
+              history.push("/login")
+            }else{
+              Auth.signOut()
+              authenticate(false)
+            }
+          }}>
+            {auth === false ? "Login" : "Logout" }
+          </Button>
         </Toolbar>
       </AppBar>
     </div>

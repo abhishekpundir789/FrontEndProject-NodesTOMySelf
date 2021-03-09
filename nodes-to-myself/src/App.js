@@ -1,19 +1,31 @@
-import {BrowserRouter as Router, Switch, Route, Link} from "react-router-dom";
+import {useState,useEffect} from 'react'
+import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
 import './App.css';
 import Login from './components/Login';
 import Header from './components/Header'
 import UserProfile from './components/UserProfilePage'
 import Tabs from './components/Tabs'
+import GuardedRoute from './components/GuardRoute'
 import Home from './components/Home'
 
 function App() {
+  const [isAuthenticated, setisAuthenticated] = useState(false);
+
+  const authenticateUser = (authState) => {
+    setisAuthenticated(authState);
+  }
+
+  useEffect(() => {
+    console.log(`Authenticated: ${isAuthenticated}`);
+}, [isAuthenticated]);
+
   return (
     <Router>
-      <Header></Header>
+      <Header auth={isAuthenticated} authenticate={authenticateUser}></Header>
       <main style = {{marginTop: 30}}></main>
         <Switch>          
           <Route path="/login">
-            <Login></Login>
+            <Login authenticate={authenticateUser}></Login>
           </Route>
           <Route path="/images">
             <Tabs></Tabs>
@@ -31,10 +43,7 @@ function App() {
             <Tabs></Tabs>
             <p>Notes</p>
           </Route>
-          <Route path="/profile">
-            <Tabs></Tabs>
-            <UserProfile></UserProfile>
-          </Route>
+          <GuardedRoute path='/profile' auth={isAuthenticated} component={UserProfile} />
           <Route path="/">
             <Tabs></Tabs>
             <Home></Home>
