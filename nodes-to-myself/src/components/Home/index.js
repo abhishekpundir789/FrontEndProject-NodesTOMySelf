@@ -1,7 +1,10 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { HomeContainer, HomeH1, HomeWrapper, HomeCard, HomeH2, HomeP, HomeHeader} from './HomeElements'
 
+const pages = ["/todos", "/notes", "/images", "/links"]
+
 const Home = () => {
+    const [value, setValue] = React.useState()
     return (
         <HomeContainer>
             <HomeH1>Welcome to MyNodes!!!</HomeH1>
