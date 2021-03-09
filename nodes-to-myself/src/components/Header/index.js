@@ -37,11 +37,12 @@ export default function ButtonAppBar({auth, authenticate}) {
           </Typography>          
           <Button color="inherit" 
           onClick={()=> {
-            if(!auth){
-              history.push("/login")
-            }else{
+            if(auth){
               Auth.signOut()
               authenticate(false)
+              history.push("/")
+            }else{
+              history.push("/login")
             }
           }}>
             {auth === false ? "Login" : "Logout" }

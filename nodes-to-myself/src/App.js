@@ -23,29 +23,30 @@ function App() {
     <Router>
       <Header auth={isAuthenticated} authenticate={authenticateUser}></Header>
       <main style = {{marginTop: 30}}></main>
+      <Tabs></Tabs>
         <Switch>          
           <Route path="/login">
             <Login authenticate={authenticateUser}></Login>
           </Route>
           <Route path="/images">
-            <Tabs></Tabs>
+
             <p>Images</p>
           </Route>
           <Route path="/links">
-            <Tabs></Tabs>
+
             <p>Links</p>
           </Route>
           <Route path="/todos">
-            <Tabs></Tabs>
+
             <p>ToDos</p>
           </Route>
           <Route path="/notes">
-            <Tabs></Tabs>
+
             <p>Notes</p>
           </Route>
           <GuardedRoute path='/profile' auth={isAuthenticated} component={UserProfile} />
           <Route path="/">
-            <Tabs></Tabs>
+
             <Home></Home>
           </Route>
         </Switch>
