@@ -4,8 +4,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import logo from '../../assets/logoWhiteCrop.png'
 import { useHistory } from "react-router-dom"
 import {Auth} from 'aws-amplify'
@@ -33,16 +31,17 @@ export default function ButtonAppBar({auth, authenticate}) {
         <Toolbar>         
           <Typography variant="h6" className={classes.title}>
               <a href="/">
-                <img id="logo" src={logo}/>
+                <img id="logo" src={logo} alt="logo"/>
               </a>
           </Typography>          
           <Button color="inherit" 
           onClick={()=> {
-            if(!auth){
-              history.push("/login")
-            }else{
+            if(auth){
               Auth.signOut()
               authenticate(false)
+              history.push("/")
+            }else{
+              history.push("/login")
             }
           }}>
             {auth === false ? "Login" : "Logout" }
