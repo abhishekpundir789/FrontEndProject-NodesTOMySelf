@@ -28,7 +28,6 @@ function App() {
       const attributes = await Auth.currentAuthenticatedUser();
       setUser(attributes)
       setisAuthenticated(true)
-      console.log(user)
     }catch(e){
       console.log(e)
     }
@@ -59,7 +58,7 @@ function App() {
 
             <p>Notes</p>
           </Route>
-          <GuardedRoute path='/profile' auth={isAuthenticated} component={UserProfile}/>
+          <GuardedRoute path='/profile' auth={isAuthenticated} component={UserProfile} user={user}/>
           <Route path="/">
 
             <Home></Home>

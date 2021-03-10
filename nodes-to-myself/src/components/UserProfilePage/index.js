@@ -28,6 +28,7 @@ const useStyles = makeStyles({
   })
 
 export default function UserProfilePage(props){
+    console.log(props)
     const classes = useStyles()
     const [newPassword, setNewPassword] = useState("")
     //const [confirmNewPassword, setConfirmNewPassword] = useState("")
@@ -49,7 +50,7 @@ export default function UserProfilePage(props){
 
     return(
         <div className={classes.root}>
-            <h1 className={classes.header}>User Profile</h1>
+            <h1 className={classes.header}>{props.user.username}'s profile</h1>
             <Typography className={classes.title}>Change Password</Typography>
             <form onSubmit={submitNewPassword}>
                 <TextField
