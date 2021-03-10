@@ -7,6 +7,7 @@ import UserProfile from './components/UserProfilePage'
 import Tabs from './components/Tabs'
 import GuardedRoute from './components/GuardRoute'
 import Home from './components/Home'
+import ToDo from './components/ToDosPage'
 import {Auth} from 'aws-amplify'
 
 function App() {
