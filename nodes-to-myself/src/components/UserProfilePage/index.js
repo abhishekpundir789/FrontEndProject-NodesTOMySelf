@@ -27,14 +27,11 @@ const useStyles = makeStyles({
     },
   })
 
-export default function UserProfilePage(){
+export default function UserProfilePage(props){
     const classes = useStyles()
-    //const [user,setUser] = useState({})
     const [newPassword, setNewPassword] = useState("")
     //const [confirmNewPassword, setConfirmNewPassword] = useState("")
     const [newEmail, setNewEmail] = useState("")
-
-    //api call to get user
 
     const submitNewPassword = (event) => {
         event.preventDefault()

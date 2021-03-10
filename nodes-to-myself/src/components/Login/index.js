@@ -24,7 +24,6 @@ const useStyles = makeStyles({
 export default function Login({authenticate}){
     const classes = useStyles()
     const history = useHistory();
-
     const [tabValue, setTabValue] = useState(0)
     const [username,setUsername] = useState("")
     const [email,setEmail] = useState("")
@@ -33,20 +32,20 @@ export default function Login({authenticate}){
     const submit = async (event) =>{
         event.preventDefault()
         if(tabValue === 0){
-            console.log({type: "login", username, password})
             try{
+                console.log({type: "login", username, password})
                 const loginResponse = await Auth.signIn({
                 username,
                 password,
-              });
+              });  
             authenticate(true);
             history.push("/")
             }catch(error){
                 console.log(error)
             } 
         }else{
-            console.log({type: "sign up", username, email, password})
             try{
+                console.log({type: "sign up", username, email, password})
                 const signUpResponse = await Auth.signUp({
                 username,
                 password,
@@ -54,7 +53,7 @@ export default function Login({authenticate}){
                   email: email
                 }
               });
-            authenticate(true);
+              authenticate(true);
             history.push("/")
             }catch(error){
                 console.log(error)
