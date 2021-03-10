@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles({
     root: {
+      marginTop: 20,
       maxWidth: 700,
     },
     header:{
@@ -26,14 +27,12 @@ const useStyles = makeStyles({
     },
   })
 
-export default function UserProfilePage(){
+export default function UserProfilePage(props){
+    console.log(props)
     const classes = useStyles()
-    //const [user,setUser] = useState({})
     const [newPassword, setNewPassword] = useState("")
     //const [confirmNewPassword, setConfirmNewPassword] = useState("")
     const [newEmail, setNewEmail] = useState("")
-
-    //api call to get user
 
     const submitNewPassword = (event) => {
         event.preventDefault()
@@ -51,7 +50,7 @@ export default function UserProfilePage(){
 
     return(
         <div className={classes.root}>
-            <h1 className={classes.header}>User Profile</h1>
+            <h1 className={classes.header}>{props.user.username}'s profile</h1>
             <Typography className={classes.title}>Change Password</Typography>
             <form onSubmit={submitNewPassword}>
                 <TextField

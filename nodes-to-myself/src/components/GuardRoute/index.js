@@ -5,7 +5,7 @@ export default function GuardedRoute  ({ component: Component, auth, ...rest }) 
     return (
     <Route {...rest} render={(props) => (
         auth === true
-            ? <Component {...props} />
+            ? <Component user ={rest.user} {...props} />
             : <Redirect to='/login' />
     )} />
     );

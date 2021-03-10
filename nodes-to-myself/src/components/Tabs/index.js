@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
@@ -15,12 +15,8 @@ const pages = ["/todos", "/notes", "/images", "/links", "/profile"]
 
 export default function CenteredTabs() {
   const classes = useStyles();
-  const [value, setValue] = React.useState();
+  const [value, setValue] = React.useState(0);
   const history = useHistory()
-
-  useEffect(()=>{
-    history.push("/")
-  }, [])
 
   const handleChange = (event, newValue) => {
     setValue(newValue)

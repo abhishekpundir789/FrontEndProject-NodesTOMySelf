@@ -7,45 +7,60 @@ import UserProfile from './components/UserProfilePage'
 import Tabs from './components/Tabs'
 import GuardedRoute from './components/GuardRoute'
 import Home from './components/Home'
+import {Auth} from 'aws-amplify'
 
 function App() {
-  const [isAuthenticated, setisAuthenticated] = useState(false);
 
+  const [isAuthenticated, setisAuthenticated] = useState(false);
+  const [user,setUser] = useState({})
+  
   const authenticateUser = (authState) => {
     setisAuthenticated(authState);
   }
 
   useEffect(() => {
     console.log(`Authenticated: ${isAuthenticated}`);
-}, [isAuthenticated]);
+    getUser()
+  }, [isAuthenticated]);
+
+  const getUser = async () => {
+    try{
+      const attributes = await Auth.currentAuthenticatedUser();
+      setUser(attributes)
+      setisAuthenticated(true)
+    }catch(e){
+      console.log(e)
+    }
+  }
 
   return (
     <Router>
       <Header auth={isAuthenticated} authenticate={authenticateUser}></Header>
       <main style = {{marginTop: 30}}></main>
+      <Tabs></Tabs>
         <Switch>          
           <Route path="/login">
             <Login authenticate={authenticateUser}></Login>
           </Route>
           <Route path="/images">
-            <Tabs></Tabs>
+
             <p>Images</p>
           </Route>
           <Route path="/links">
-            <Tabs></Tabs>
+
             <p>Links</p>
           </Route>
           <Route path="/todos">
-            <Tabs></Tabs>
+
             <p>ToDos</p>
           </Route>
           <Route path="/notes">
-            <Tabs></Tabs>
+
             <p>Notes</p>
           </Route>
-          <GuardedRoute path='/profile' auth={isAuthenticated} component={UserProfile} />
+          <GuardedRoute path='/profile' auth={isAuthenticated} component={UserProfile} user={user}/>
           <Route path="/">
-            <Tabs></Tabs>
+
             <Home></Home>
           </Route>
         </Switch>
