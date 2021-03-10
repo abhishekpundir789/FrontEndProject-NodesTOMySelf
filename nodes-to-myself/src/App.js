@@ -7,6 +7,7 @@ import UserProfile from './components/UserProfilePage'
 import Tabs from './components/Tabs'
 import GuardedRoute from './components/GuardRoute'
 import Home from './components/Home'
+import ToDo from './components/ToDosPage'
 
 function App() {
   const [isAuthenticated, setisAuthenticated] = useState(false);
@@ -37,7 +38,7 @@ function App() {
           </Route>
           <Route path="/todos">
             <Tabs></Tabs>
-            <p>ToDos</p>
+            <ToDo></ToDo>
           </Route>
           <Route path="/notes">
             <Tabs></Tabs>
