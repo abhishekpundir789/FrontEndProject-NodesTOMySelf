@@ -52,8 +52,7 @@ function App() {
             <p>Links</p>
           </Route>
           <Route path="/todos">
-
-            <p>ToDos</p>
+            <ToDo></ToDo>
           </Route>
           <Route path="/notes">
 
