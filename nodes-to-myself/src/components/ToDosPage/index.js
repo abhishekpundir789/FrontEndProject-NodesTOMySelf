@@ -55,7 +55,8 @@ const useStyles = makeStyles({
         alignItems: "right",
         justifyContent: "flex-end",
         alignItems: "flex-end",
-        display: "flex"
+        display: "flexbox",
+        flexDirection: "column"    
     },
 
     card: {
@@ -113,6 +114,9 @@ export default function ToDosPage() {
                     <Button variant="contained" color="secondary">
                         Delete
                     </Button>
+                    <Button variant="contained" color="primary">
+                        Add ToDo
+                    </Button>
                 </div>
             </CardActions>
             </Card>
@@ -140,9 +144,14 @@ export default function ToDosPage() {
             </CardContent>
             <CardActions>
                 <div className={classes.buttonDiv}> 
+                    <Grid>
                     <Button variant="contained" color="secondary">
                         Delete
                     </Button>
+                    <Button variant="contained" color="primary">
+                        Add ToDo
+                    </Button>
+                    </Grid>
                 </div>
             </CardActions>
             </Card>
