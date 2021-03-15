@@ -71,7 +71,8 @@ export default function LinksPage() {
         setNewCategory("")
     }
 
-    const removeCategory = (catName) => {
+    const removeCategory = (e,catName) => {
+        e.preventDefault()
         var tempCatergories = categories
         for(var i = 0; i < tempCatergories.length; i++){
             if(tempCatergories[i] === catName){
@@ -79,7 +80,7 @@ export default function LinksPage() {
                 setCategories([...tempCatergories])
             }
         }
-
+        console.log(`deleting category: ${catName}`)
     }
 
     return (
@@ -96,21 +97,17 @@ export default function LinksPage() {
                             <Typography className={classes.pos} color="textSecondary">                
                                 <form noValidate autoComplete="off" > 
                                     <TextField id="standard-basic" label="Links"/>
-                                    <IconButton aria-label="delete" className={classes.margin} type="submit">
+                                    <IconButton aria-label="delete" className={classes.margin}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </form>
                                 <div>
                                     <AddCircleRoundedIcon style={{fill: "#4054b4"}}/>                
                                 </div>
-                            </Typography>           
-                        </CardContent>
-                        <CardContent>
-                            <div className={classes.buttonDiv}> 
-                                <Button variant="contained" color="secondary">
-                                    Delete Category
-                                </Button>
-                            </div>
+                            </Typography>
+                            <Button variant="contained" color="secondary" onClick={(e) => {removeCategory(e,cat)}}>
+                                Delete Category
+                            </Button>
                         </CardContent>
                     </Card>
                 )
