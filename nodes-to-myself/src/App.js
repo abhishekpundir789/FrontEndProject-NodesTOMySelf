@@ -8,6 +8,7 @@ import Tabs from './components/Tabs'
 import GuardedRoute from './components/GuardRoute'
 import Home from './components/Home'
 import ToDo from './components/ToDosPage'
+import Notes from './components/NotesPage'
 import {Auth} from 'aws-amplify'
 
 function App() {
@@ -55,8 +56,7 @@ function App() {
             <ToDo></ToDo>
           </Route>
           <Route path="/notes">
-
-            <p>Notes</p>
+            <Notes></Notes>
           </Route>
           <GuardedRoute path='/profile' auth={isAuthenticated} component={UserProfile} user={user}/>
           <Route path="/">
