@@ -6,7 +6,7 @@ import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles({
     root: {
-      marginTop: 20,
+      margin: 20,
       maxWidth: 700,
     },
     header: {

@@ -23,6 +23,7 @@ function App() {
   useEffect(() => {
     console.log(`Authenticated: ${isAuthenticated}`);
     getUser()
+    console.log(user)
   }, [isAuthenticated]);
 
   const getUser = async () => {
