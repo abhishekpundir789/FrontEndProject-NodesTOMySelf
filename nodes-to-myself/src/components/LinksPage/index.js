@@ -71,6 +71,19 @@ export default function LinksPage() {
         setNewCategory("")
     }
 
+    const updateCategory = (e, catName) => {
+        e.preventDefault()
+        var tempCatergories = categories
+        for(var i = 0; i < tempCatergories.length; i++){
+            if(tempCatergories[i] === catName){
+                tempCatergories[i] = newCategory
+                setCategories([...tempCatergories])
+            }
+        }
+        console.log(`updated ${catName} to ${newCategory}`)
+        setNewCategory("")
+    }
+
     const removeCategory = (e,catName) => {
         e.preventDefault()
         var tempCatergories = categories
@@ -84,35 +97,41 @@ export default function LinksPage() {
     }
 
     return (
-    <Grid container spacing ={3} className={classes.root}> 
-        <form className={classes.header} noValidate autoComplete="off" onSubmit={addtoCategories}>            
-            <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}}/>
-            <Button type="submit">Add List</Button>
-        </form>
-        {categories.map(cat => {
-                return (
-                    <Card className={classes.card} variant="outlined">
-                        <CardHeader  title={cat}/>
-                        <CardContent>
-                            <Typography className={classes.pos} color="textSecondary">                
-                                <form noValidate autoComplete="off" > 
-                                    <TextField id="standard-basic" label="Links"/>
-                                    <IconButton aria-label="delete" className={classes.margin}>
-                                        <DeleteIcon />
-                                    </IconButton>
+        <Grid container spacing ={3} className={classes.root}> 
+            <form className={classes.header} noValidate autoComplete="off" onSubmit={addtoCategories}>            
+                <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}}/>
+                <Button type="submit">Add List</Button>
+            </form>
+            {categories.map(cat => {
+                    return (
+                        <div >
+                            <Card className={classes.card} variant="outlined">
+                                <CardHeader  title={cat}/>
+                                <form onSubmit={e=>{updateCategory(e,cat,newCategory)}}>
+                                    <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}}/>
+                                    <Button type="submit">Update</Button>
                                 </form>
-                                <div>
-                                    <AddCircleRoundedIcon style={{fill: "#4054b4"}}/>                
-                                </div>
-                            </Typography>
-                            <Button variant="contained" color="secondary" onClick={(e) => {removeCategory(e,cat)}}>
-                                Delete Category
-                            </Button>
-                        </CardContent>
-                    </Card>
-                )
-            })}
-    </Grid>
-        
+                                <CardContent>
+                                    <Typography className={classes.pos} color="textSecondary">                
+                                        <form noValidate autoComplete="off" > 
+                                            <TextField id="standard-basic" label="Links"/>
+                                            <IconButton aria-label="delete" className={classes.margin}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </form>
+                                        <div>
+                                            <AddCircleRoundedIcon style={{fill: "#4054b4"}}/>                
+                                        </div>
+                                    </Typography>
+                                    <Button variant="contained" color="secondary" onClick={(e) => {removeCategory(e,cat)}}>
+                                        Delete Category
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </div>
+                        
+                    )
+                })}
+        </Grid>
     );
 }
