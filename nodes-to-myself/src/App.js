@@ -8,6 +8,7 @@ import Tabs from './components/Tabs'
 import GuardedRoute from './components/GuardRoute'
 import Home from './components/Home'
 import ToDo from './components/ToDosPage'
+import LinksPage from './components/LinksPage'
 import Notes from './components/NotesPage'
 import {Auth} from 'aws-amplify'
 
@@ -50,8 +51,7 @@ function App() {
             <p>Images</p>
           </Route>
           <Route path="/links">
-
-            <p>Links</p>
+            <LinksPage></LinksPage>
           </Route>
           <Route path="/todos">
             <ToDo></ToDo>
