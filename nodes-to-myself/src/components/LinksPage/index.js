@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import {Card, CardHeader, Grid, CardContent, Button, Typography, TextField, IconButton} from '@material-ui/core';
+import {Card, CardHeader, Grid, CardContent, Button, Typography, TextField, IconButton,Popover} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 
@@ -34,9 +34,7 @@ const useStyles = makeStyles({
     },
     header: {
         width: "100%",
-        padding: "0 20px 0 30px",
-        margin: "0 0 20px",
-        
+        display: "flex",
         
     },
     buttonDiv: {
@@ -47,15 +45,67 @@ const useStyles = makeStyles({
 
     card: {
         margin:"0 10px 10px 10px"
-    }
+    },
+
+    cardHeader: {
+        justifySelf: "start",  
+    },
+
+    updateButton: {
+        fontSize: 12,
+        padding: "2px",
+        margin: "25px 0",
+        marginLeft: "15%",
+    },
+
+    popover:{
+        padding: 10,
+    },
+
+    popoverTitle: {
+        padding: 0,
+        margin: 5,
+    },
+
+    popoverText:{
+        margin: 5,
+    },
+
+    popoverButton:{
+        margin: 5,
+        marginTop: 10,
+    },
         
   });    
 
 export default function LinksPage() {
-    const classes = useStyles(); 
+    const classes = useStyles();
+    const [newListAnchor, setnewListAnchor] = useState(null)
+    const [updateListAnchor, setupdateListAnchor] = useState(null)
     const [linkList, setLinkList] = useState([])
     const [categories, setCategories] = useState([])
     const [newCategory, setNewCategory] = useState("")
+
+    const handleNewListClick = (event) => {
+        setnewListAnchor(event.currentTarget);
+      };
+    
+      const handleNewListClose = () => {
+        setnewListAnchor(null);
+      };
+
+      const handleUpdateListClick = (event) => {
+        setupdateListAnchor(event.currentTarget);
+      };
+    
+      const handleUpdateListClose = () => {
+        setupdateListAnchor(null);
+      };
+    
+      const open = Boolean(newListAnchor);
+      const open2 = Boolean(updateListAnchor)
+      const newList = open ? 'simple-popover' : undefined;
+      const updateList = open2 ? 'simple-popover' : undefined
 
     const addtoCategories = (e) => {
         e.preventDefault()
@@ -68,6 +118,7 @@ export default function LinksPage() {
             setCategories([...categories, newCategory])
             console.log(`adding ${newCategory} to categories`)            
         }
+        setnewListAnchor(null)
         setNewCategory("")
     }
 
@@ -82,6 +133,7 @@ export default function LinksPage() {
         }
         console.log(`updated ${catName} to ${newCategory}`)
         setNewCategory("")
+        setupdateListAnchor(null)
     }
 
     const removeCategory = (e,catName) => {
@@ -97,20 +149,60 @@ export default function LinksPage() {
     }
 
     return (
-        <Grid container spacing ={3} className={classes.root}> 
-            <form className={classes.header} noValidate autoComplete="off" onSubmit={addtoCategories}>            
-                <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}}/>
-                <Button type="submit">Add List</Button>
-            </form>
+        <Grid container spacing ={3} className={classes.root}>
+            <div>
+                <Button aria-describedby={newList} variant="contained" color="primary" onClick={handleNewListClick}>
+                    Add List
+                </Button>
+                <Popover
+                    id={newList} open={open} newListAnchor={newListAnchor} onClose={handleNewListClose}
+                    anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                    }}
+                    className={classes.popover}
+                >
+                    <form  noValidate autoComplete="off" onSubmit={addtoCategories}>
+                        <h4 className={classes.popoverTitle}> Add List</h4>          
+                        <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}} className={classes.popoverText}/>
+                        <Button type="submit" className={classes.popoverButton} >Add</Button>
+                    </form>
+                </Popover>
+            </div>
+
             {categories.map(cat => {
                     return (
                         <div >
                             <Card className={classes.card} variant="outlined">
-                                <CardHeader  title={cat}/>
-                                <form onSubmit={e=>{updateCategory(e,cat,newCategory)}}>
-                                    <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}}/>
-                                    <Button type="submit">Update</Button>
-                                </form>
+                                <div className={classes.header}>
+                                    <CardHeader  title={cat} className={classes.cardHeader}/>
+                                
+                                    <Button aria-describedby={updateList} variant="contained" color="primary" onClick={handleUpdateListClick} className={classes.updateButton}>
+                                        Change
+                                    </Button>
+                                    <Popover
+                                        id={updateList} open={open2} updateListAnchor={updateListAnchor} onClose={handleUpdateListClose}
+                                        anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'center',
+                                        }}
+                                        transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'center',
+                                        }}
+                                        className={classes.popover}
+                                    >
+                                        <form onSubmit={e=>{updateCategory(e,cat,newCategory)}}>
+                                            <h4 className={classes.popoverTitle}> Update {cat}</h4>
+                                            <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}} className={classes.popoverText}/>
+                                            <Button type="submit" className={classes.popoverButton}>Update</Button>
+                                        </form>
+                                    </Popover>
+                                </div>
                                 <CardContent>
                                     <Typography className={classes.pos} color="textSecondary">                
                                         <form noValidate autoComplete="off" > 
