@@ -1,10 +1,11 @@
 import React, {useState} from 'react'
 import { Button,TextField,Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles'
+import {Auth} from 'aws-amplify'
 
 const useStyles = makeStyles({
     root: {
-      marginTop: 20,
+      margin: 20,
       maxWidth: 700,
     },
     header:{
@@ -30,6 +31,7 @@ const useStyles = makeStyles({
 export default function UserProfilePage(props){
     console.log(props)
     const classes = useStyles()
+    const [oldPassword, setOldPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     //const [confirmNewPassword, setConfirmNewPassword] = useState("")
     const [newEmail, setNewEmail] = useState("")
@@ -37,7 +39,13 @@ export default function UserProfilePage(props){
     const submitNewPassword = (event) => {
         event.preventDefault()
         //add a check to make sure newPassword and confirmNewPassword match
-        console.log(`new password is : ${newPassword}`)
+        Auth.currentAuthenticatedUser()
+            .then(user=> {
+                return Auth.changePassword(user, oldPassword, newPassword);
+            })
+            .then(data => console.log(data))
+            .catch(err => console.log(err))
+        setOldPassword("")
         setNewPassword("")
     }
 
@@ -45,7 +53,6 @@ export default function UserProfilePage(props){
         event.preventDefault()
         console.log(`new email is : ${newEmail}`)
         setNewEmail("")
-
     }
 
     return(
@@ -54,7 +61,17 @@ export default function UserProfilePage(props){
             <Typography className={classes.title}>Change Password</Typography>
             <form onSubmit={submitNewPassword}>
                 <TextField
+                    value={oldPassword}
+                    //type="password"
+                    onChange={e=> setOldPassword(e.target.value)}
+                    fullWidth
+                    label="old password"
+                    variant="filled"
+                    className={classes.inputField}
+                ></TextField>
+                <TextField
                     value={newPassword}
+                    //type="password"
                     onChange={e=> setNewPassword(e.target.value)}
                     fullWidth
                     label="new password"

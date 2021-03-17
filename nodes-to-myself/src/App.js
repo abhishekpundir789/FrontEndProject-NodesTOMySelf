@@ -8,6 +8,8 @@ import Tabs from './components/Tabs'
 import GuardedRoute from './components/GuardRoute'
 import Home from './components/Home'
 import ToDo from './components/ToDosPage'
+import LinksPage from './components/LinksPage'
+import Notes from './components/NotesPage'
 import {Auth} from 'aws-amplify'
 
 function App() {
@@ -22,6 +24,7 @@ function App() {
   useEffect(() => {
     console.log(`Authenticated: ${isAuthenticated}`);
     getUser()
+    console.log(user)
   }, [isAuthenticated]);
 
   const getUser = async () => {
@@ -48,15 +51,13 @@ function App() {
             <p>Images</p>
           </Route>
           <Route path="/links">
-
-            <p>Links</p>
+            <LinksPage></LinksPage>
           </Route>
           <Route path="/todos">
             <ToDo></ToDo>
           </Route>
           <Route path="/notes">
-
-            <p>Notes</p>
+            <Notes></Notes>
           </Route>
           <GuardedRoute path='/profile' auth={isAuthenticated} component={UserProfile} user={user}/>
           <Route path="/">
