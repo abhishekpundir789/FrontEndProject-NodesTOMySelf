@@ -1,9 +1,8 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import {Card, CardHeader, Grid, CardContent, Button, Typography, TextField, IconButton,Popover} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
-
 
 const useStyles = makeStyles({
     root: {
@@ -35,87 +34,90 @@ const useStyles = makeStyles({
     header: {
         width: "100%",
         display: "flex",
-        
     },
     buttonDiv: {
         alignItems: "right",
         justifyContent: "flex-end",
         display: "flex"
     },
-
     card: {
         margin:"0 10px 10px 10px"
     },
-
     cardHeader: {
         justifySelf: "start",  
     },
-
     updateButton: {
         fontSize: 12,
         padding: "2px",
         margin: "25px 0",
         marginLeft: "15%",
     },
-
     popover:{
         padding: 10,
     },
-
     popoverTitle: {
         padding: 0,
         margin: 5,
     },
-
     popoverText:{
         margin: 5,
     },
-
     popoverButton:{
         margin: 5,
         marginTop: 10,
     },
-        
-  });    
+  });
 
 export default function LinksPage() {
+    const API_INVOKE_URL = 'https://tv45w0cj0b.execute-api.us-west-1.amazonaws.com/prod'
     const classes = useStyles();
     const [newListAnchor, setnewListAnchor] = useState(null)
     const [updateListAnchor, setupdateListAnchor] = useState(null)
-    const [linkList, setLinkList] = useState([])
     const [categories, setCategories] = useState([])
     const [newCategory, setNewCategory] = useState("")
+    const open = Boolean(newListAnchor);
+    const open2 = Boolean(updateListAnchor)
+    const newList = open ? 'simple-popover' : undefined;
+    const updateList = open2 ? 'simple-popover' : undefined
+
+    const searchApi = async () =>{
+        fetch(API_INVOKE_URL)
+        .then(response => response.json())
+        .then(data => {
+            setCategories(JSON.parse(data.body))
+        })
+    }
+
+    useEffect(() => {
+        searchApi();
+    }, [])
 
     const handleNewListClick = (event) => {
         setnewListAnchor(event.currentTarget);
-      };
+    };
     
-      const handleNewListClose = () => {
+    const handleNewListClose = () => {
         setnewListAnchor(null);
-      };
+    };
 
-      const handleUpdateListClick = (event) => {
+    const handleUpdateListClick = (event) => {
         setupdateListAnchor(event.currentTarget);
-      };
-    
-      const handleUpdateListClose = () => {
-        setupdateListAnchor(null);
-      };
-    
-      const open = Boolean(newListAnchor);
-      const open2 = Boolean(updateListAnchor)
-      const newList = open ? 'simple-popover' : undefined;
-      const updateList = open2 ? 'simple-popover' : undefined
+    };
 
+    const handleUpdateListClose = () => {
+        setupdateListAnchor(null);
+    };
+    
     const addtoCategories = (e) => {
         e.preventDefault()
         var exist = false
-        categories.forEach(cat => {if(cat === newCategory){
+        categories.forEach(cat => {if(cat.description === newCategory){
             console.log(`${newCategory} already exist`)
             exist = true
         }})
         if(!exist){
-            setCategories([...categories, newCategory])
+            const newCatObject = {category: "links", description:newCategory, items: [] }
+            //put method to add newCatObject into category, and upload to database
             console.log(`adding ${newCategory} to categories`)            
         }
         setnewListAnchor(null)
@@ -173,13 +175,12 @@ export default function LinksPage() {
                     </form>
                 </Popover>
             </div>
-
             {categories.map(cat => {
                     return (
                         <div >
                             <Card className={classes.card} variant="outlined">
                                 <div className={classes.header}>
-                                    <CardHeader  title={cat} className={classes.cardHeader}/>
+                                    <CardHeader  title={cat.description} className={classes.cardHeader}/>
                                 
                                     <Button aria-describedby={updateList} variant="contained" color="primary" onClick={handleUpdateListClick} className={classes.updateButton}>
                                         Change
@@ -196,8 +197,8 @@ export default function LinksPage() {
                                         }}
                                         className={classes.popover}
                                     >
-                                        <form onSubmit={e=>{updateCategory(e,cat,newCategory)}}>
-                                            <h4 className={classes.popoverTitle}> Update {cat}</h4>
+                                        <form onSubmit={e=>{updateCategory(e,cat.description,newCategory)}}>
+                                            <h4 className={classes.popoverTitle}> Update {cat.description}</h4>
                                             <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}} className={classes.popoverText}/>
                                             <Button type="submit" className={classes.popoverButton}>Update</Button>
                                         </form>
