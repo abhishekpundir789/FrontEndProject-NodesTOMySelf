@@ -14,10 +14,8 @@ import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import Grid from '@material-ui/core/Grid';
 import * as _ from "lodash"
 
-
 export default function ToDosPage() {
-    const API_URL = 'https://enz236hkvf.execute-api.us-west-1.amazonaws.com/prod'
-                    
+    const API_URL = 'https://enz236hkvf.execute-api.us-west-1.amazonaws.com/prod'                    
     
     const classes = useStyles();    
     const [toDoLists, setToDoLists] = React.useState([])
@@ -31,10 +29,8 @@ export default function ToDosPage() {
             .then(data => {
             setToDoLists(data)
             }
-        )
-        
+        )        
     }
-
     
     const putList = async () => {
         const newToDoList = 
@@ -102,16 +98,12 @@ export default function ToDosPage() {
     const deleteListById  = (toDoListId) => {
         // setToDoList({toDoList})
         deleteList(toDoListId)
-    }
-    
+    }    
     
     const NewList = () => {
         putList()
     }
-
-   
-
-
+    
     return (
         <Grid container spacing ={3} className={classes.root}>            
             <Button className={classes.button} variant="contained" color="primary" href="#contained-buttons" onClick={NewList}>
@@ -189,15 +181,13 @@ export default function ToDosPage() {
             border: 0,
             color: 'white',
             height: 48,
-            margin: '0 30px 30px 0',
-           
+            margin: '0 30px 30px 0',           
             
         },
         header: {
             width: "100%",
             padding: "0 20px 0 30px",
-            margin: "0 0 20px",
-            
+            margin: "0 0 20px",            
             
         },
         buttonDiv: {
@@ -212,4 +202,4 @@ export default function ToDosPage() {
             margin:"0 10px 10px 10px"
         }
             
-      });    
+      });
