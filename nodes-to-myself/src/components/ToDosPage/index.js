@@ -12,15 +12,14 @@ import IconButton from '@material-ui/core/IconButton';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import Grid from '@material-ui/core/Grid';
-import newList from './toDoList.json' 
+import * as _ from "lodash"
+
 
 export default function ToDosPage() {
     const API_URL = 'https://enz236hkvf.execute-api.us-west-1.amazonaws.com/prod'
                     
     
-    const classes = useStyles(); 
-    const [todoCount, setTodoCount] = React.useState()
-   
+    const classes = useStyles();    
     const [toDoLists, setToDoLists] = React.useState([])
     const [toDoList, setToDoList] = React.useState()
     const [listName, setListName] = React.useState()
@@ -38,7 +37,7 @@ export default function ToDosPage() {
 
     
     const putList = async () => {
-        const newListAgain = 
+        const newToDoList = 
             {
                 "toDoList":{
                     "id": "t"+(Date.now()),
@@ -49,7 +48,7 @@ export default function ToDosPage() {
         
         fetch(API_URL , {
             method: 'PUT',
-            body: JSON.stringify(newListAgain),
+            body: JSON.stringify(newToDoList),
             headers: {'Content-Type' : 'application/json'}
             
         })
@@ -110,17 +109,7 @@ export default function ToDosPage() {
         putList()
     }
 
-    // const handleChange = (event) => {
-    //   setChecked(event.target.checked);
-    // };
-    
-    // function incrementToDoCounter() {
-    //     setTodoCount (todoCount + 1)
-    // }
-
-    // function decrementToDoCounter() {
-    //     setTodoCount (todoCount - 1)
-    // }
+   
 
 
     return (
@@ -129,7 +118,7 @@ export default function ToDosPage() {
                 New List
             </Button>
             {
-                toDoLists.map(toDoList => (
+                _.sortBy(toDoLists,"id").map(toDoList => (
                    
                     <Card key={toDoList.id} className={classes.card} variant="outlined">
                          
