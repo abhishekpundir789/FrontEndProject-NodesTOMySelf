@@ -12,14 +12,15 @@ import IconButton from '@material-ui/core/IconButton';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import Grid from '@material-ui/core/Grid';
+import newList from './toDoList.json' 
 
 export default function ToDosPage() {
     const API_URL = 'https://enz236hkvf.execute-api.us-west-1.amazonaws.com/prod'
                     
     
     const classes = useStyles(); 
-    // const [todoCount, setTodoCount] = React.useState(1)
-    // const [checked, setChecked] = React.useState(true)
+    const [todoCount, setTodoCount] = React.useState()
+   
     const [toDoLists, setToDoLists] = React.useState([])
     const [toDoList, setToDoList] = React.useState()
     const [listName, setListName] = React.useState()
@@ -29,14 +30,36 @@ export default function ToDosPage() {
         fetch(API_URL + '/todo')
             .then(response => response.json())
             .then(data => {
-            setToDoLists(JSON.parse(data.body))
+            setToDoLists(data)
             }
         )
+        
+    }
+
+    
+    const putList = async () => {
+        const newListAgain = 
+            {
+                "toDoList":{
+                    "id": "t"+(Date.now()),
+                    "category": "todo",
+                   "description": "New List"
+                }
+            }
+        
+        fetch(API_URL , {
+            method: 'PUT',
+            body: JSON.stringify(newListAgain),
+            headers: {'Content-Type' : 'application/json'}
+            
+        })
+        .then(response => response.json())        
+        .then(() => { getAllLists() })
     }
 
     const patchList = async (todoListId) => {
         
-        fetch(`${API_URL}/todo/${toDoList.id}` , {
+        fetch(`${API_URL}/${todoListId}` , {
             method: 'PUT',
             body: JSON.stringify({toDoList}),            
             headers: {'Content-Type' : 'application/json',
@@ -49,16 +72,14 @@ export default function ToDosPage() {
         // console.log({toDoList})
     }
 
-    const deleteList = async => {
-        fetch(`${API_URL}/todo/${toDoList.id}` , {
-            method: 'DELETE',
-                        
+    const deleteList = async (toDoListId) => {
+        fetch(`${API_URL}/${toDoListId}` , {
+            method: 'DELETE',                        
             headers: {'Content-Type' : 'application/json',
                     'Access-Control-Allow-Origin': '*'                        
             }   
             
-        } )
-        .then(response => response.json())
+        } )       
         .then(() => { getAllLists() })
     }
 
@@ -71,6 +92,7 @@ export default function ToDosPage() {
         setListName(event.target.value)        
         patchList(todoListId);        
         setToDoList({...toDoList, description: listName})
+        console.log(todoListId)
     }    
 
     const itemNameInput = (event) => {
@@ -78,10 +100,15 @@ export default function ToDosPage() {
 
     } 
     
-    const deleteListById  = (toDoList) => {
-        setToDoList({toDoList})
-        deleteList()
-    }    
+    const deleteListById  = (toDoListId) => {
+        // setToDoList({toDoList})
+        deleteList(toDoListId)
+    }
+    
+    
+    const NewList = () => {
+        putList()
+    }
 
     // const handleChange = (event) => {
     //   setChecked(event.target.checked);
@@ -98,7 +125,7 @@ export default function ToDosPage() {
 
     return (
         <Grid container spacing ={3} className={classes.root}>            
-            <Button className={classes.button} variant="contained" color="primary" href="#contained-buttons">
+            <Button className={classes.button} variant="contained" color="primary" href="#contained-buttons" onClick={NewList}>
                 New List
             </Button>
             {
@@ -133,7 +160,9 @@ export default function ToDosPage() {
                     </CardContent>
                     <CardActions>
                         <div className={classes.buttonDiv}> 
-                            <Button variant="contained" color="secondary" onSubmit = {deleteListById(toDoList)}>
+                            <Button variant="contained" color="secondary" 
+                            onClick={() => deleteListById(toDoList.id)}
+                            >
                                 Delete
                             </Button>                            
                         </div>
