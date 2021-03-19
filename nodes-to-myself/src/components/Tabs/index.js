@@ -15,7 +15,7 @@ const pages = ["/todos", "/notes", "/images", "/links", "/profile"]
 
 export default function CenteredTabs() {
   const classes = useStyles();
-  const [value, setValue] = React.useState();
+  const [value, setValue] = React.useState(0);
   const history = useHistory()
 
   const handleChange = (event, newValue) => {

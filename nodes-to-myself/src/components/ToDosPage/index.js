@@ -84,10 +84,11 @@ export default function ToDosPage() {
     }, [])
 
     const listNameInput = (event, todoListId, toDoList) => {
-        setListName(event.target.value)        
-        patchList(todoListId);        
+        setListName(event.target.value)                
         setToDoList({...toDoList, description: listName})
-        console.log(todoListId)
+        patchList(todoListId);
+        console.log(toDoList.description)
+        console.log(listName)
     }    
 
     const itemNameInput = (event) => {
@@ -117,12 +118,11 @@ export default function ToDosPage() {
                     <CardContent>
                     <form className={classes.header} noValidate autoComplete="off">            
                         <TextField id="basic" placeholder="To Do List" defaultValue={toDoList.description} variant="outlined" onChange = {event => listNameInput(event, toDoList.id, toDoList)}/>
-                    </form>                
-                        <Typography className={classes.pos} color="textSecondary">                
+                    </form>                  
                             {   
                                 toDoList.items &&
                                 toDoList.items.map(item => (
-                                    <form noValidate autoComplete="off"> 
+                                    <form key={item} noValidate autoComplete="off"> 
                                         <Checkbox                        
                                             color="primary"
                                             inputProps={{ 'aria-label': 'secondary checkbox' }}
@@ -133,20 +133,18 @@ export default function ToDosPage() {
                                         </IconButton>
                                     </form>
                                 ))
-                            }
-                            <div>
+                            }                            
                                 <AddCircleRoundedIcon style={{fill: "#4054b4"}}/>                
-                            </div>
-                        </Typography>           
+                        
                     </CardContent>
                     <CardActions>
-                        <div className={classes.buttonDiv}> 
-                            <Button variant="contained" color="secondary" 
+                        
+                            <Button className={classes.buttonDiv} variant="contained" color="secondary" 
                             onClick={() => deleteListById(toDoList.id)}
                             >
                                 Delete
                             </Button>                            
-                        </div>
+                        
                     </CardActions>
                     </Card>
                 ))
