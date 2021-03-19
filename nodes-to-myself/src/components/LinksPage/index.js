@@ -110,16 +110,15 @@ export default function LinksPage() {
     
     const addtoCategories = (e) => {
         e.preventDefault()
-        var exist = false
-        categories.forEach(cat => {if(cat.description === newCategory){
-            console.log(`${newCategory} already exist`)
-            exist = true
-        }})
-        if(!exist){
-            const newCatObject = {category: "links", description:newCategory, items: [] }
-            //put method to add newCatObject into category, and upload to database
-            console.log(`adding ${newCategory} to categories`)            
-        }
+        const newCatObject = {id:`l${categories.length + 1}`, category: "links", description: newCategory, items: [] }
+        //put method to add newCatObject into category, and upload to database
+        fetch(API_INVOKE_URL, {
+            method: 'PUT',
+            body: JSON.stringify({newCatObject}),
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(() => {searchApi()})
         setnewListAnchor(null)
         setNewCategory("")
     }
