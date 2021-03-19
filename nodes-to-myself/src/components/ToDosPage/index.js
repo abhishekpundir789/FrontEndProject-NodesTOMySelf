@@ -13,6 +13,7 @@ import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import Grid from '@material-ui/core/Grid';
 import * as _ from "lodash"
+import { ContactMailOutlined } from '@material-ui/icons';
 
 export default function ToDosPage() {
     const API_URL = 'https://enz236hkvf.execute-api.us-west-1.amazonaws.com/prod'                    
@@ -20,8 +21,9 @@ export default function ToDosPage() {
     const classes = useStyles();    
     const [toDoLists, setToDoLists] = React.useState([])
     const [toDoList, setToDoList] = React.useState()
-    const [listName, setListName] = React.useState()
-    const [itemName, setItemName] = React.useState()
+    // const [listName, setListName] = React.useState()
+    const [item, setItem] = React.useState()
+    const [items, setItems] = React.useState()
 
     const getAllLists = async () => {
         fetch(API_URL + '/todo')
@@ -63,8 +65,6 @@ export default function ToDosPage() {
             
         } )
         .then(response => response.json())
-        // .then(() => { getAllLists() })
-        // console.log({toDoList})
     }
 
     const deleteList = async (toDoListId) => {
@@ -84,17 +84,14 @@ export default function ToDosPage() {
     }, [])
 
     const listNameInput = (event, todoListId, toDoList) => {
-        setListName(event.target.value)                
-        setToDoList({...toDoList, description: listName})
+        // setListName(event.target.value)                 
+        setToDoList({...toDoList, description: event.target.value})
         patchList(todoListId);
         console.log(toDoList.description)
-        console.log(listName)
+       
     }    
 
-    const itemNameInput = (event) => {
-        setListName(event.target.value)
-
-    } 
+  
     
     const deleteListById  = (toDoListId) => {
         // setToDoList({toDoList})
@@ -104,6 +101,18 @@ export default function ToDosPage() {
     const NewList = () => {
         putList()
     }
+
+    const itemNameInput = async (event, item, items, index, toDoList, todoListId) => {  
+        // setListName(event.target.value)      
+        setItems(items)
+        items.splice(index,1,event.target.value)
+        setItem(event.target.value)
+        console.log(items)
+        setToDoList  ({...toDoList, })
+        
+        patchList (todoListId)
+        
+    } 
     
     return (
         <Grid container spacing ={3} className={classes.root}>            
@@ -117,17 +126,17 @@ export default function ToDosPage() {
                          
                     <CardContent>
                     <form className={classes.header} noValidate autoComplete="off">            
-                        <TextField id="basic" placeholder="To Do List" defaultValue={toDoList.description} variant="outlined" onChange = {event => listNameInput(event, toDoList.id, toDoList)}/>
+                        <TextField id="basic" placeholder="To Do List" defaultValue={toDoList.description} variant="outlined"  onChange = {event => listNameInput(event, toDoList.id, toDoList)}/>
                     </form>                  
                             {   
                                 toDoList.items &&
-                                toDoList.items.map(item => (
-                                    <form key={item} noValidate autoComplete="off"> 
+                                toDoList.items.map((item, index) => (
+                                    <form key={ `item-${index}`} noValidate autoComplete="off"> 
                                         <Checkbox                        
                                             color="primary"
                                             inputProps={{ 'aria-label': 'secondary checkbox' }}
                                         />                
-                                        <TextField id="standard-basic" defaultValue={item}  onChange = {itemNameInput}/>
+                                        <TextField id="standard-basic" defaultValue={item}  onChange = {event => itemNameInput(event, item, toDoList.items, index, {toDoList}, toDoList.id)}/>
                                         <IconButton aria-label="delete" className={classes.margin}>
                                             <DeleteIcon />
                                         </IconButton>
