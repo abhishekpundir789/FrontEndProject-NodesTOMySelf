@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import {Card, CardHeader, Grid, CardContent, Button, Typography, TextField, IconButton,Popover} from '@material-ui/core';
+import {Card, CardHeader, Grid, CardContent, Button, TextField, IconButton,Popover} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
+import * as _ from 'lodash'
 
 const useStyles = makeStyles({
     root: {
@@ -69,28 +70,25 @@ const useStyles = makeStyles({
   });
 
 export default function LinksPage() {
-    const API_INVOKE_URL = 'https://tv45w0cj0b.execute-api.us-west-1.amazonaws.com/prod'
-    const classes = useStyles();
     const [newListAnchor, setnewListAnchor] = useState(null)
-    const [updateListAnchor, setupdateListAnchor] = useState(null)
-    const [categories, setCategories] = useState([])
-    const [newCategory, setNewCategory] = useState("")
     const open = Boolean(newListAnchor);
-    const open2 = Boolean(updateListAnchor)
     const newList = open ? 'simple-popover' : undefined;
-    const updateList = open2 ? 'simple-popover' : undefined
+
+    const API_INVOKE_URL = 'https://tv45w0cj0b.execute-api.us-west-1.amazonaws.com/prod2'
+    const classes = useStyles();
+
+    const [linkLists, setlinkLists] = useState([])
+    const [linkList, setlinkList] = useState({id: "", description: "", category: "links", items: []})
+    const [listName, setlistName] = useState("")
+
 
     const searchApi = async () =>{
         fetch(API_INVOKE_URL)
         .then(response => response.json())
         .then(data => {
-            setCategories(JSON.parse(data.body))
+            setlinkLists(JSON.parse(data.body))
         })
     }
-
-    useEffect(() => {
-        searchApi();
-    }, [])
 
     const handleNewListClick = (event) => {
         setnewListAnchor(event.currentTarget);
@@ -99,55 +97,55 @@ export default function LinksPage() {
     const handleNewListClose = () => {
         setnewListAnchor(null);
     };
-
-    const handleUpdateListClick = (event) => {
-        setupdateListAnchor(event.currentTarget);
-    };
-
-    const handleUpdateListClose = () => {
-        setupdateListAnchor(null);
-    };
     
-    const addtoCategories = (e) => {
+    const addtolinkLists = async (e) => {
         e.preventDefault()
-        const newCatObject = {id:`l${categories.length + 1}`, category: "links", description: newCategory, items: [] }
-        //put method to add newCatObject into category, and upload to database
+        const newListObject = {id:`l${Date.now()}`, category: "links", description: listName, items: [] }
         fetch(API_INVOKE_URL, {
             method: 'PUT',
-            body: JSON.stringify({newCatObject}),
+            body: JSON.stringify({newListObject}),
             headers: {'Content-Type': 'application/json'}
         })
             .then(response => response.json())
             .then(() => {searchApi()})
         setnewListAnchor(null)
-        setNewCategory("")
+        setlistName("")
     }
 
-    const updateCategory = (e, catName) => {
+    const changingListName = async (e, list, id) => {
         e.preventDefault()
-        var tempCatergories = categories
-        for(var i = 0; i < tempCatergories.length; i++){
-            if(tempCatergories[i] === catName){
-                tempCatergories[i] = newCategory
-                setCategories([...tempCatergories])
-            }
-        }
-        console.log(`updated ${catName} to ${newCategory}`)
-        setNewCategory("")
-        setupdateListAnchor(null)
+        console.log(list)
+        console.log(listName)
+        setlinkList({...list, description: listName})
+        console.log(linkList)
+        updatelinkList(e, id)
+        setlistName("")
     }
 
-    const removeCategory = (e,catName) => {
+    const updatelinkList = async (e, id) => {
         e.preventDefault()
-        var tempCatergories = categories
-        for(var i = 0; i < tempCatergories.length; i++){
-            if(tempCatergories[i] === catName){
-                tempCatergories.splice(i,1)
-                setCategories([...tempCatergories])
-            }
-        }
-        console.log(`deleting category: ${catName}`)
+        fetch(API_INVOKE_URL + `/${id}`,{
+            method: 'PUT',
+            body: JSON.stringify({linkList}),
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.text().then(console.log))
+            .then(() => {searchApi()})
     }
+
+    const removelinkList = async (e,list) => {
+        e.preventDefault()
+        fetch(API_INVOKE_URL + `/${list.id}`,{
+            method:'DELETE',
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(() => {searchApi()})
+        console.log(`deleting link List: ${list.description}`)
+    }
+    
+    useEffect(() => {
+        searchApi();
+    }, [])
 
     return (
         <Grid container spacing ={3} className={classes.root}>
@@ -167,44 +165,24 @@ export default function LinksPage() {
                     }}
                     className={classes.popover}
                 >
-                    <form  noValidate autoComplete="off" onSubmit={addtoCategories}>
+                    <form  noValidate autoComplete="off" onSubmit={addtolinkLists}>
                         <h4 className={classes.popoverTitle}> Add List</h4>          
-                        <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}} className={classes.popoverText}/>
-                        <Button type="submit" className={classes.popoverButton} >Add</Button>
+                        <TextField value={listName} id="basic" label="List Name" variant="outlined" onChange={(e) => {setlistName(e.target.value)}} className={classes.popoverText}/>
+                        <Button type="submit" className={classes.popoverButton}>Add</Button>
                     </form>
                 </Popover>
             </div>
-            {categories.map(cat => {
+            {_.sortBy(linkLists,"id").map(list => {
                     return (
                         <div >
                             <Card className={classes.card} variant="outlined">
-                                <div className={classes.header}>
-                                    <CardHeader  title={cat.description} className={classes.cardHeader}/>
-                                
-                                    <Button aria-describedby={updateList} variant="contained" color="primary" onClick={handleUpdateListClick} className={classes.updateButton}>
-                                        Change
-                                    </Button>
-                                    <Popover
-                                        id={updateList} open={open2} updateListAnchor={updateListAnchor} onClose={handleUpdateListClose}
-                                        anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'center',
-                                        }}
-                                        transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'center',
-                                        }}
-                                        className={classes.popover}
-                                    >
-                                        <form onSubmit={e=>{updateCategory(e,cat.description,newCategory)}}>
-                                            <h4 className={classes.popoverTitle}> Update {cat.description}</h4>
-                                            <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}} className={classes.popoverText}/>
+                                    <CardHeader  title={list.description} className={classes.cardHeader}/>
+                                        <form onSubmit={e=> changingListName(e,list,list.id)}>
+                                            <TextField value={listName} id="basic" label="update name" variant="outlined" onChange={(e) => {setlistName(e.target.value)}} className={classes.popoverText}/>
                                             <Button type="submit" className={classes.popoverButton}>Update</Button>
                                         </form>
-                                    </Popover>
-                                </div>
                                 <CardContent>
-                                    <Typography className={classes.pos} color="textSecondary">                
+                                    <div className={classes.pos} color="textSecondary">                
                                         <form noValidate autoComplete="off" > 
                                             <TextField id="standard-basic" label="Links"/>
                                             <IconButton aria-label="delete" className={classes.margin}>
@@ -214,14 +192,13 @@ export default function LinksPage() {
                                         <div>
                                             <AddCircleRoundedIcon style={{fill: "#4054b4"}}/>                
                                         </div>
-                                    </Typography>
-                                    <Button variant="contained" color="secondary" onClick={(e) => {removeCategory(e,cat)}}>
-                                        Delete Category
+                                    </div>
+                                    <Button variant="contained" color="secondary" onClick={(e) => {removelinkList(e,list)}}>
+                                        Delete
                                     </Button>
                                 </CardContent>
                             </Card>
                         </div>
-                        
                     )
                 })}
         </Grid>
