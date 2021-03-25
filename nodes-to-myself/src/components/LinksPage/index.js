@@ -78,7 +78,7 @@ export default function LinksPage() {
     const classes = useStyles();
 
     const [linkLists, setlinkLists] = useState([])
-    const [linkList, setlinkList] = useState({id: "", description: "", category: "links", items: []})
+    const [linkList, setlinkList] = useState({id: "", description: "no title", category: "links", items: []})
     const [listName, setlistName] = useState("")
 
 
@@ -114,10 +114,6 @@ export default function LinksPage() {
 
     const changingListName = async (e, list, id) => {
         e.preventDefault()
-        console.log(list)
-        console.log(listName)
-        setlinkList({...list, description: listName})
-        console.log(linkList)
         updatelinkList(e, id)
         setlistName("")
     }
@@ -129,7 +125,6 @@ export default function LinksPage() {
             body: JSON.stringify({linkList}),
             headers: {'Content-Type': 'application/json'}
         })
-            .then(response => response.text().then(console.log))
             .then(() => {searchApi()})
     }
 
@@ -142,6 +137,10 @@ export default function LinksPage() {
         .then(() => {searchApi()})
         console.log(`deleting link List: ${list.description}`)
     }
+
+    useEffect(() => {
+        setlinkList({...linkList, description: listName})
+    },[listName])
     
     useEffect(() => {
         searchApi();
@@ -176,7 +175,7 @@ export default function LinksPage() {
                     return (
                         <div >
                             <Card className={classes.card} variant="outlined">
-                                    <CardHeader  title={list.description} className={classes.cardHeader}/>
+                                    <CardHeader title={list.description} className={classes.cardHeader}/>
                                         <form onSubmit={e=> changingListName(e,list,list.id)}>
                                             <TextField value={listName} id="basic" label="update name" variant="outlined" onChange={(e) => {setlistName(e.target.value)}} className={classes.popoverText}/>
                                             <Button type="submit" className={classes.popoverButton}>Update</Button>
