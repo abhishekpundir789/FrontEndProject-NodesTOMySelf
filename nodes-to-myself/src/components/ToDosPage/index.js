@@ -26,10 +26,11 @@ export default function ToDosPage() {
     const [items, setItems] = React.useState()
 
     const getAllLists = async () => {
-        fetch(API_URL + '/todo')
+        fetch(API_URL + '/')
             .then(response => response.json())
             .then(data => {
-            setToDoLists(data)
+            setToDoLists(JSON.parse(data.body))
+            console.log(toDoLists)
             }
         )        
     }
@@ -40,7 +41,9 @@ export default function ToDosPage() {
                 "toDoList":{
                     "id": "t"+(Date.now()),
                     "category": "todo",
-                   "description": "New List"
+                   "description": "New List",
+                   "items":[],
+                   "isDone":[]
                 }
             }
         
@@ -71,6 +74,30 @@ export default function ToDosPage() {
         fetch(`${API_URL}/${toDoListId}` , {
             method: 'DELETE',                        
             headers: {'Content-Type' : 'application/json',
+                    'Access-Control-Allow-Origin': '*' ,
+                    'Access-Control-Allow-Headers' : 'Origin, X-Requested-With, Content-Type, Accept, Authorization, User-Agent'                       
+            }   
+            
+        } )       
+        .then(() => { getAllLists(toDoListId) })
+    }
+    
+    const putListItem = async (toDoListId) => {
+               
+        fetch(`${API_URL}/${toDoListId}/${toDoListId}` , {
+            method: 'PUT',
+            //body: JSON.stringify("New ToDo List item"),
+            headers: {'Content-Type' : 'application/json'}
+            
+        })
+             
+        .then(() => { getAllLists() })
+    }
+
+    const deleteListItem = async (toDoListId, itemIndex) => {
+        fetch(`${API_URL}/${toDoListId}/${itemIndex}` , {
+            method: 'DELETE',                        
+            headers: {'Content-Type' : 'application/json',
                     'Access-Control-Allow-Origin': '*'                        
             }   
             
@@ -80,13 +107,15 @@ export default function ToDosPage() {
 
     useEffect(()=> {
         getAllLists();
-        // console.log(toDoLists)
+        console.log(toDoLists)
     }, [])
 
     const listNameInput = (event, todoListId, toDoList) => {
-        // setListName(event.target.value)                 
-        setToDoList({...toDoList, description: event.target.value})
+        // setListName(event.target.value)
+        const defaultUpdateItemIndex = 0;                 
+        setToDoList({...toDoList, description: event.target.value, "itemToPatchIndex": defaultUpdateItemIndex})
         patchList(todoListId);
+        console.log ({toDoList})  
         console.log(toDoList.description)
        
     }    
@@ -106,10 +135,9 @@ export default function ToDosPage() {
         // setListName(event.target.value)      
         setItems(items)
         items.splice(index,1,event.target.value)
-        setItem(event.target.value)
-        console.log(items)
-        setToDoList  ({...toDoList, })
-        
+        let listItemCount = items.length
+        setItem(event.target.value)        
+        setToDoList({...toDoList, "itemToPatchIndex": index})        
         patchList (todoListId)
         
     } 
@@ -120,7 +148,8 @@ export default function ToDosPage() {
                 New List
             </Button>
             {
-                _.sortBy(toDoLists,"id").map(toDoList => (
+                _.sortBy(toDoLists,"id")
+                .map(toDoList => (
                    
                     <Card key={toDoList.id} className={classes.card} variant="outlined">
                          
@@ -136,14 +165,16 @@ export default function ToDosPage() {
                                             color="primary"
                                             inputProps={{ 'aria-label': 'secondary checkbox' }}
                                         />                
-                                        <TextField id="standard-basic" defaultValue={item}  onChange = {event => itemNameInput(event, item, toDoList.items, index, {toDoList}, toDoList.id)}/>
-                                        <IconButton aria-label="delete" className={classes.margin}>
+                                        <TextField id="standard-basic" defaultValue={item}  onChange = {event => itemNameInput(event, item, toDoList.items, index, toDoList, toDoList.id)}/>
+                                        <IconButton onClick={() => deleteListItem(toDoList.id,index)} aria-label="delete" className={classes.margin}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </form>
                                 ))
-                            }                            
-                                <AddCircleRoundedIcon style={{fill: "#4054b4"}}/>                
+                            }   
+                                <IconButton onClick={() => putListItem(toDoList.id)} style={{fill: "#4054b4"}}>                         
+                                    <AddCircleRoundedIcon  />                
+                                </IconButton>
                         
                     </CardContent>
                     <CardActions>
