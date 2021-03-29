@@ -1,9 +1,9 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import {Card, CardHeader, Grid, CardContent, Button, Typography, TextField, IconButton,Popover} from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
-
+import * as _ from 'lodash'
 
 const useStyles = makeStyles({
     root: {
@@ -35,123 +35,138 @@ const useStyles = makeStyles({
     header: {
         width: "100%",
         display: "flex",
-        
     },
     buttonDiv: {
         alignItems: "right",
         justifyContent: "flex-end",
         display: "flex"
     },
-
     card: {
         margin:"0 10px 10px 10px"
     },
-
     cardHeader: {
         justifySelf: "start",  
     },
-
     updateButton: {
         fontSize: 12,
         padding: "2px",
         margin: "25px 0",
         marginLeft: "15%",
     },
-
     popover:{
         padding: 10,
     },
-
     popoverTitle: {
         padding: 0,
         margin: 5,
     },
-
     popoverText:{
         margin: 5,
     },
-
     popoverButton:{
         margin: 5,
         marginTop: 10,
     },
-        
-  });    
+    newListButton:{
+        marginRight: "100%",
+
+    },
+  });
 
 export default function LinksPage() {
-    const classes = useStyles();
     const [newListAnchor, setnewListAnchor] = useState(null)
-    const [updateListAnchor, setupdateListAnchor] = useState(null)
-    const [linkList, setLinkList] = useState([])
-    const [categories, setCategories] = useState([])
-    const [newCategory, setNewCategory] = useState("")
+    const open = Boolean(newListAnchor);
+    const newList = open ? 'simple-popover' : undefined;
+
+    const [newItemAnchor, setnewItemAnchor] = useState(false)
+
+    const API_INVOKE_URL = 'https://tv45w0cj0b.execute-api.us-west-1.amazonaws.com/prod2'
+    const classes = useStyles();
+
+    const [linkLists, setlinkLists] = useState([])
+    const [linkList, setlinkList] = useState({id:"", description: "", category: "links", items: []})
+    const [currentId, setCurrentId] = useState("")
+    const [listName, setlistName] = useState("")
+    const [itemsList, setitemsList] = useState([])
+    const [newItem, setNewItem] = useState("");
+
+
+    const searchApi = async () =>{
+        fetch(API_INVOKE_URL)
+        .then(response => response.json())
+        .then(data => {
+            setlinkLists(JSON.parse(data.body))
+        })
+    }
 
     const handleNewListClick = (event) => {
         setnewListAnchor(event.currentTarget);
-      };
+    };
     
-      const handleNewListClose = () => {
+    const handleNewListClose = () => {
         setnewListAnchor(null);
-      };
-
-      const handleUpdateListClick = (event) => {
-        setupdateListAnchor(event.currentTarget);
-      };
+    };
     
-      const handleUpdateListClose = () => {
-        setupdateListAnchor(null);
-      };
-    
-      const open = Boolean(newListAnchor);
-      const open2 = Boolean(updateListAnchor)
-      const newList = open ? 'simple-popover' : undefined;
-      const updateList = open2 ? 'simple-popover' : undefined
-
-    const addtoCategories = (e) => {
+    const addtolinkLists = async (e) => {
         e.preventDefault()
-        var exist = false
-        categories.forEach(cat => {if(cat === newCategory){
-            console.log(`${newCategory} already exist`)
-            exist = true
-        }})
-        if(!exist){
-            setCategories([...categories, newCategory])
-            console.log(`adding ${newCategory} to categories`)            
-        }
+        const newListObject = {id:`l${Date.now()}`, category: "links", description: listName, items: [] }
+        fetch(API_INVOKE_URL, {
+            method: 'PUT',
+            body: JSON.stringify({newListObject}),
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(response => response.json())
+            .then(() => {searchApi()})
         setnewListAnchor(null)
-        setNewCategory("")
+        setlistName("")
     }
 
-    const updateCategory = (e, catName) => {
+    const updatelinkList = async (e, id) => {
         e.preventDefault()
-        var tempCatergories = categories
-        for(var i = 0; i < tempCatergories.length; i++){
-            if(tempCatergories[i] === catName){
-                tempCatergories[i] = newCategory
-                setCategories([...tempCatergories])
-            }
-        }
-        console.log(`updated ${catName} to ${newCategory}`)
-        setNewCategory("")
-        setupdateListAnchor(null)
+        fetch(API_INVOKE_URL + `/${id}`,{
+            method: 'PUT',
+            body: JSON.stringify({linkList}),
+            headers: {'Content-Type': 'application/json'}
+        })
+            .then(() => {searchApi()})
+        setlistName("")
+    }    
+
+    const updateItems = async (e,list,id) => {
+        e.preventDefault()
+        var tempList = list.items
+        tempList.push(newItem)
+        setitemsList(tempList)
+        updatelinkList(e,id)
+        setNewItem("")
     }
 
-    const removeCategory = (e,catName) => {
+    const removelinkList = async (e,list) => {
         e.preventDefault()
-        var tempCatergories = categories
-        for(var i = 0; i < tempCatergories.length; i++){
-            if(tempCatergories[i] === catName){
-                tempCatergories.splice(i,1)
-                setCategories([...tempCatergories])
-            }
-        }
-        console.log(`deleting category: ${catName}`)
+        fetch(API_INVOKE_URL + `/${list.id}`,{
+            method:'DELETE',
+            headers: {'Content-Type': 'application/json'}
+        })
+        .then(() => {searchApi()})
+        console.log(`deleting link List: ${list.description}`)
     }
+
+    useEffect(()=> {
+        setlinkList({...linkList,id: currentId, items: itemsList})
+    },[itemsList])
+
+    useEffect(() => {
+        setlinkList({...linkList,id: currentId, description: listName})
+    },[listName])
+    
+    useEffect(() => {
+        searchApi();
+    }, [])
 
     return (
         <Grid container spacing ={3} className={classes.root}>
             <div>
-                <Button aria-describedby={newList} variant="contained" color="primary" onClick={handleNewListClick}>
+                <Button className={classes.newListButton} aria-describedby={newList} variant="contained" color="primary" onClick={handleNewListClick}>
                     Add List
                 </Button>
                 <Popover
@@ -166,62 +181,59 @@ export default function LinksPage() {
                     }}
                     className={classes.popover}
                 >
-                    <form  noValidate autoComplete="off" onSubmit={addtoCategories}>
+                    <form noValidate autoComplete="off" onSubmit={addtolinkLists}>
                         <h4 className={classes.popoverTitle}> Add List</h4>          
-                        <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}} className={classes.popoverText}/>
-                        <Button type="submit" className={classes.popoverButton} >Add</Button>
+                        <TextField value={listName} id="basic" label="List Name" variant="outlined" onChange={(e) => {setlistName(e.target.value)}} className={classes.popoverText}/>
+                        <Button type="submit" className={classes.popoverButton}>Add</Button>
                     </form>
                 </Popover>
             </div>
-
-            {categories.map(cat => {
+            {_.sortBy(linkLists,"id").map(list => {
                     return (
                         <div >
                             <Card className={classes.card} variant="outlined">
-                                <div className={classes.header}>
-                                    <CardHeader  title={cat} className={classes.cardHeader}/>
-                                
-                                    <Button aria-describedby={updateList} variant="contained" color="primary" onClick={handleUpdateListClick} className={classes.updateButton}>
-                                        Change
-                                    </Button>
-                                    <Popover
-                                        id={updateList} open={open2} updateListAnchor={updateListAnchor} onClose={handleUpdateListClose}
-                                        anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'center',
-                                        }}
-                                        transformOrigin={{
-                                        vertical: 'top',
-                                        horizontal: 'center',
-                                        }}
-                                        className={classes.popover}
-                                    >
-                                        <form onSubmit={e=>{updateCategory(e,cat,newCategory)}}>
-                                            <h4 className={classes.popoverTitle}> Update {cat}</h4>
-                                            <TextField value={newCategory} id="basic" label="List Name" variant="outlined" onChange={(e) => {setNewCategory(e.target.value)}} className={classes.popoverText}/>
+                                    <CardHeader title={list.description} className={classes.cardHeader}/>
+                                        <form onSubmit={e=> {
+                                            updatelinkList(e,list.id)}}>
+                                            <TextField value={listName} id="basic" label="update name" variant="outlined" onChange={(e) => {setCurrentId(list.id)
+                                            setlistName(e.target.value)}} className={classes.popoverText}/>
                                             <Button type="submit" className={classes.popoverButton}>Update</Button>
                                         </form>
-                                    </Popover>
-                                </div>
                                 <CardContent>
-                                    <Typography className={classes.pos} color="textSecondary">                
-                                        <form noValidate autoComplete="off" > 
-                                            <TextField id="standard-basic" label="Links"/>
-                                            <IconButton aria-label="delete" className={classes.margin}>
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </form>
-                                        <div>
+                                    <div className={classes.pos} color="textSecondary">                
+                                        {list.items.map(item => {
+                                            return (
+                                                <Typography>
+                                                    {item}
+                                                    <IconButton aria-label="delete" className={classes.margin}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </Typography>
+                                            )
+                                        })}
+                                        {
+                                            newItemAnchor &&
+                                            <div className={classes.newItemInput}>
+                                                <form noValidate autoComplete="off" onSubmit={(e)=> 
+                                                {setCurrentId(list.id)
+                                                    updateItems(e,list,list.id)}}>
+                                                    <TextField id="standard-basic" label="Links" value={newItem} onChange={(e)=>{setNewItem(e.target.value)}}/>
+                                                    <IconButton aria-label="delete" className={classes.margin}>
+                                                        <DeleteIcon />
+                                                    </IconButton>
+                                                </form>
+                                            </div>
+                                        }
+                                        <IconButton onClick={(e)=>{setnewItemAnchor(true)}}>
                                             <AddCircleRoundedIcon style={{fill: "#4054b4"}}/>                
-                                        </div>
-                                    </Typography>
-                                    <Button variant="contained" color="secondary" onClick={(e) => {removeCategory(e,cat)}}>
-                                        Delete Category
+                                        </IconButton> 
+                                    </div>
+                                    <Button variant="contained" color="secondary" onClick={(e) => {removelinkList(e,list)}}>
+                                        Delete
                                     </Button>
                                 </CardContent>
                             </Card>
                         </div>
-                        
                     )
                 })}
         </Grid>
